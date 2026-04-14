@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # 1. The Database Tier
+  my-db:
+    image: postgres:15-alpine
+    container_name: my-db
+    environment:
+      POSTGRES_USER: akshay
+      POSTGRES_PASSWORD: supersecret
+      POSTGRES_DB: portfolio
+    networks:
+      - tri-tier-net
+
+  # 2. The Backend Tier
+  my-api:
+    build: ./backend
+    container_name: my-api
+    depends_on:
+      - my-db
+    networks:
+      - tri-tier-net
+
+  # 3. The Frontend Tier
+  my-web:
+    build: ./frontend
+    container_name: my-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - my-api
+    networks:
+      - tri-tier-net
+
+# 4. The Virtual Switch
+networks:
+  tri-tier-net:
+    driver: bridge
