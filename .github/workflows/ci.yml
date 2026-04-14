@@ -1,0 +1,23 @@
+name: Tri-Tier CI Pipeline
+
+# 1. The Trigger: When does this pipeline run?
+on:
+  push:
+    branches:
+      - main
+
+# 2. The Worker: What machine runs this?
+jobs:
+  build-and-test:
+    # GitHub will spin up a temporary Ubuntu Linux server just for us
+    runs-on: ubuntu-latest
+
+    # 3. The Assembly Line: What are the steps?
+    steps:
+      # Step A: Download our code from the repository onto the temporary server
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step B: Test if our Dockerfiles and Compose file are valid by building them
+      - name: Build Docker Images
+        run: docker compose build
